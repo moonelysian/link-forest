@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<{ background: string }>`
   display: flex;
   position: absolute;
   top: 0;
   right: 0;
   margin-top: -20px;
-  background: lavender;
+  background: ${(props) => props.background};
   border-radius: 100%;
   height: 36px;
   width: 36px;
@@ -14,9 +14,13 @@ export const Wrapper = styled.div`
   cursor: pointer;
 `;
 
-const DeleteMark = (): JSX.Element => {
+interface Props {
+  background: string;
+}
+
+const DeleteMark = ({ background }: Props): JSX.Element => {
   return (
-    <Wrapper>
+    <Wrapper background={background}>
       <svg
         width="16"
         height="16"

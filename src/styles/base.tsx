@@ -2,10 +2,9 @@ import styled from 'styled-components';
 
 export const Wrapper = styled.div`
   padding: 50px 10px;
-  max-width: 420px;
+  width: 420px;
   margin: 0 auto;
-  height: 100vh;
-  overflow: auto;
+  background: rgba(232, 232, 232, 0.1);
 
   [data-rbd-draggable-context-id] {
     &:not(:last-child) {
