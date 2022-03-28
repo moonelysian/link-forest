@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { Wrapper } from '../styles/base';
 import { draggables } from './base';
 import DroppableList from './DroppableList';
 
@@ -17,14 +16,14 @@ const EditorArea = styled.div`
 const Editor: React.FC<Props> = ({ isOpen }: Props) => {
   return (
     <EditorArea className={isOpen ? 'editor' : 'editor hidden'}>
-      <Wrapper>
+      <div className="wrapper">
         <DroppableList
           droppableId="editor-area"
           draggables={draggables}
           itemId="editor-block"
           isDropDisabled={true}
         />
-      </Wrapper>
+      </div>
     </EditorArea>
   );
 };

@@ -2,73 +2,17 @@ import { useEffect, useState } from 'react';
 import {
   DragDropContext,
   DraggableLocation,
+  DragStart,
   DropResult,
 } from 'react-beautiful-dnd';
 import { draggables } from '../component/base';
 import DeleteMark from '../component/DeleteMark';
 import DroppableList from '../component/DroppableList';
 import Editor from '../component/Editor';
-import {
-  Block,
-  ContentArea,
-  ContentTitle,
-  ProfileArea,
-  Video,
-  Wrapper,
-} from '../styles/base';
 
 const Home = (): JSX.Element => {
   const [items, setItems] = useState<JSX.Element[]>([]);
-
-  useEffect(() => {
-    // const draggables = [
-    //   <ContentTitle key={0}>텍스트 텍스트 텍스트 텍스트 텍스트</ContentTitle>,
-    //   <Block
-    //     key={1}
-    //     onClick={(e) => {
-    //       activeBlock(e.currentTarget.classList, 'https://www.naver.com/');
-    //     }}
-    //   >
-    //     <div>일반링크</div>
-    //     <DeleteMark background="rgba(230, 230, 250, 0.8)" />
-    //   </Block>,
-    //   <Block
-    //     key={2}
-    //     className="horizion"
-    //     onClick={(e) => {
-    //       activeBlock(e.currentTarget.classList, 'https://www.naver.com/');
-    //     }}
-    //   >
-    //     <img
-    //       src="https://via.placeholder.com/80"
-    //       alt=""
-    //       style={{ borderRadius: '16px' }}
-    //     />
-    //     <p style={{ marginLeft: '10px' }}>이미지와 함께하는 블록</p>
-    //   </Block>,
-    //   <Block
-    //     key={3}
-    //     onClick={(e) => {
-    //       activeBlock(e.currentTarget.classList, 'https://www.naver.com/');
-    //     }}
-    //   >
-    //     <img
-    //       src="https://via.placeholder.com/400"
-    //       alt=""
-    //       style={{ borderRadius: '16px', width: '100%' }}
-    //     />
-    //     <p style={{ marginTop: '20px' }}>이미지와 함께하는 블록</p>
-    //   </Block>,
-    //   <Video
-    //     key={4}
-    //     src="https://www.youtube.com/embed/g7c0W-8rNmw"
-    //     frameBorder="0"
-    //     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    //     allowFullScreen
-    //   ></Video>,
-    // ];
-    // setItems(draggables);
-  }, []);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const activeBlock = (classList: DOMTokenList, link: string) => {
     classList.add('is-active');
@@ -90,12 +34,20 @@ const Home = (): JSX.Element => {
     return setItems(destClone);
   };
 
+  const onDragStart = (state: DragStart) => {
+    if (state.source.droppableId === 'editor-area') {
+      const $contentArea = document.querySelector('.content-area');
+      $contentArea ? $contentArea.classList.add('hovering') : '';
+    }
+  };
+
   const onDrangEnd = (result: DropResult) => {
     const { source, destination } = result;
+    const $contentArea = document.querySelector('.content-area');
+    $contentArea ? $contentArea.classList.remove('hovering') : '';
     if (!destination) {
       return;
     }
-
     if (
       source.droppableId === 'editor-area' &&
       destination.droppableId === 'content-area'
@@ -110,24 +62,38 @@ const Home = (): JSX.Element => {
 
   return (
     <div style={{ display: 'flex' }}>
-      <DragDropContext onDragEnd={onDrangEnd}>
-        <Wrapper>
+      <DragDropContext onDragStart={onDragStart} onDragEnd={onDrangEnd}>
+        <div className="wrapper">
           {/* 프로필 영역 */}
-          <ProfileArea>
+          <div className="profile-area">
             <img width="110px" src="https://via.placeholder.com/110" alt="" />
             <div>title</div>
             <div>description</div>
-          </ProfileArea>
+          </div>
           {/* 내용 영역 */}
-          <ContentArea>
+          <div className="content-area">
             <DroppableList
               droppableId="content-area"
               draggables={items}
               itemId={'content'}
             />
-          </ContentArea>
-        </Wrapper>
-        <Editor isOpen={true} />
+          </div>
+        </div>
+        <div style={{ padding: '10px' }}>
+          <img
+            src="images/next.png"
+            width="45px"
+            height="45px"
+            style={{ transform: 'rotate(0.5turn)' }}
+            onClick={(e) => {
+              setIsOpen(!isOpen);
+              e.currentTarget.style.transform = isOpen
+                ? 'rotate(0.5turn)'
+                : 'rotate(1turn)';
+            }}
+          />
+        </div>
+        <Editor isOpen={isOpen} />
       </DragDropContext>
     </div>
   );
